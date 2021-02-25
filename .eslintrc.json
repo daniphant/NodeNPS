@@ -6,10 +6,10 @@
     },
     "extends": [
         "airbnb-base",
-        "prettier",
         "plugin:import/errors",
         "plugin:import/warnings",
-        "plugin:import/typescript"
+        "plugin:import/typescript",
+        "prettier"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -23,6 +23,7 @@
     ],
     "rules": {
         "prettier/prettier": "error",
-        "import/extensions": "off"
+        "import/extensions": "off",
+        "import/no-unresolved": "off"
     }
 }
