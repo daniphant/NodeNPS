@@ -8,7 +8,7 @@ export class CreateUser1614275105598 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "binary(16)",
+            type: "varchar",
             isPrimary: true,
           },
           {
@@ -18,6 +18,7 @@ export class CreateUser1614275105598 implements MigrationInterface {
           {
             name: "email",
             type: "varchar",
+            isUnique: true
           },
           {
             name: "created_at",
