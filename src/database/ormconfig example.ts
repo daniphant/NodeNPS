@@ -5,6 +5,10 @@ const connectionOptions: MysqlConnectionOptions = {
   username: "root",
   password: "",
   database: "nodenps",
+  migrations: [`${__dirname}/migrations/*.ts`],
+  cli: {
+    migrationsDir: `${__dirname}/migrations`,
+  },
 };
 
 export default connectionOptions;
