@@ -1,9 +1,15 @@
+import "reflect-metadata";
+import { createConnection } from "typeorm";
 import express from "express";
+import routes from "./routes";
+import connectionOptions from "./ormconfig";
 
-const app = express();
+const main = async () => {
+  const app = express();
+  await createConnection(connectionOptions);
 
-app.get("/", request => {
-  if (request.destroyed == true) console.log("test");
-});
 
-app.listen(3333);
+  app.listen(3333, () => console.log("Server is up."));
+};
+
+main();
