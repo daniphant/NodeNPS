@@ -2,8 +2,8 @@ import UsersRepository from "@repositories/UsersRepository";
 import { Request, Response } from "express";
 import { getCustomRepository } from "typeorm";
 
-export default {
-  async create(request: Request, response: Response): Promise<Response> {
+export default class UserController {
+  static async create(request: Request, response: Response): Promise<Response> {
     const { name, email } = request.body;
 
     const userRepository = getCustomRepository(UsersRepository);
@@ -25,5 +25,5 @@ export default {
 
       return response.status(400).send({ error: err });
     }
-  },
-};
+  }
+}
