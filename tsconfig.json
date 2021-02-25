@@ -19,7 +19,10 @@
     "baseUrl": ".",
     "paths" : {
       "@controllers/*": ["./src/controllers/*"]
-    }
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"
