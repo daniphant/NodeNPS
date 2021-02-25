@@ -1,12 +1,12 @@
+import UsersRepository from "@repositories/UsersRepository";
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
-import User from "src/models/User";
+import { getCustomRepository } from "typeorm";
 
 export default {
   async create(request: Request, response: Response): Promise<Response> {
     const { name, email } = request.body;
 
-    const userRepository = getRepository(User);
+    const userRepository = getCustomRepository(UsersRepository);
 
     try {
       const user = userRepository.create({

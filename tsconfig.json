@@ -18,7 +18,9 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths" : {
-      "@controllers/*": ["./src/controllers/*"]
+      "@controllers/*": ["./src/controllers/*"],
+      "@repositories/*": ["./src/repositories/*"],
+      "@models/*": ["./src/models/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
