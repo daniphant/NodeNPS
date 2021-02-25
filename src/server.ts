@@ -8,6 +8,7 @@ const main = async () => {
   const app = express();
   await createConnection(connectionOptions);
 
+  app.use(routes);
 
   app.listen(3333, () => console.log("Server is up."));
 };
