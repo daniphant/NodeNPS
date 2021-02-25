@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 import express from "express";
 import routes from "./routes";
-import connectionOptions from "./ormconfig";
+import connectionOptions from "./database/ormconfig";
 
 const main = async () => {
   const app = express();
