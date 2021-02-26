@@ -1,6 +1,6 @@
 import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
 
-const connectionOptions: MysqlConnectionOptions = {
+const defaultConnectionOptions: MysqlConnectionOptions = {
   type: "mysql",
   entities: [`${__dirname}/../models/*.ts`],
   migrations: [`${__dirname}/migrations/*.ts`],
@@ -9,24 +9,29 @@ const connectionOptions: MysqlConnectionOptions = {
   },
 };
 
-// extends connectionOptions with data based on which environment you're on
+const prodConnectionOptions: MysqlConnectionOptions = {
+  ...defaultConnectionOptions,
+  username: "",
+  password: "",
+  database: "",
+};
+
+const devConnectionOptions: MysqlConnectionOptions = {
+  ...defaultConnectionOptions,
+  username: "",
+  password: "",
+  database: "",
+};
+
+const testConnectionOptions: MysqlConnectionOptions = {
+  ...defaultConnectionOptions,
+  username: "",
+  password: "",
+  database: "",
+};
+
 export default {
-  test: {
-    ...connectionOptions,
-    username: "",
-    password: "",
-    database: "",
-  },
-  dev: {
-    ...connectionOptions,
-    username: "",
-    password: "",
-    database: "",
-  },
-  prod: {
-    ...connectionOptions,
-    username: "",
-    password: "",
-    database: "",
-  },
+  dev: devConnectionOptions,
+  prod: prodConnectionOptions,
+  test: testConnectionOptions,
 };
