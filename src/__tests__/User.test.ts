@@ -1,7 +1,7 @@
 import request from "supertest";
 import { createConnection } from "typeorm";
 import app from "../app";
-import connectionOptions from "../database/ormconfig";
+import { connectionOptions } from "../database/ormconfig";
 
 describe("Users", () => {
   beforeAll(async () => {

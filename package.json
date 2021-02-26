@@ -7,7 +7,7 @@
     "dev": "NODE_ENV=dev ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/server.ts",
     "start": "NODE_ENV=dev node dist/server.js",
     "build": "NODE_ENV=prod babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
-    "typeorm": "NODE_ENV=dev ts-node ./node_modules/typeorm/cli.js --config ./src/database/ormconfig.ts",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js --config ./src/database/ormconfig.ts",
     "test": "NODE_ENV=test jest"
   },
   "dependencies": {
