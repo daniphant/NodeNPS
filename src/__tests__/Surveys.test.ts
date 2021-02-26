@@ -26,21 +26,18 @@ describe("Users", () => {
 
   afterEach(done => server && server.close(done));
 
-  it("Should be able to create a new user", async () => {
-    const response = await agent.post("/users").send({
-      email: "user@example.com",
-      name: "Random Person",
+  it("Should be able to create all surveys", async () => {
+    const response = await agent.post("/surveys").send({
+      title: "Give us your opinion! It's important to us!",
+      description: "What are your thoughts on Ugandan Knuckles?",
     });
 
     expect(response.status).toBe(201);
   });
 
-  it("Should not be able to create a new user due to existing email", async () => {
-    const response = await agent.post("/users").send({
-      email: "user@example.com",
-      name: "Random Person",
-    });
+  it("Should be able to retrieve all surveys in the database", async () => {
+    const response = await agent.get("/surveys");
 
-    expect(response.status).toBe(409);
+    expect(response.status).toBe(200);
   });
 });
