@@ -1,0 +1,66 @@
+<style>
+    .container {
+        width: 880px;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container__level {
+        display: flex;
+        margin: 10px;
+        justify-content: space-between;
+        width: 360px;
+    }
+
+    .container__answers {
+        width: 350px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .answers__value {
+        padding: 10px;
+        background: #FF69BC;
+        color: #FFF;
+        border-radius: 6px;
+        width: 15px;
+        text-align: center;
+        text-decoration: none;
+    }
+</style>
+
+<div class="container">
+    <label>Hello <strong>{{name}}</strong>,</label>
+    <h3>{{title}}</h3>
+
+    <br/>
+
+    <strong>{{description}}</strong>
+
+    <div class="container__level">
+        <span>very unlikely</span>
+        <span>very likely</span>
+    </div>
+
+    <div class="container__answers">
+        <a class="answers__value" href="">1</a>
+        <a class="answers__value" href="">2</a>
+        <a class="answers__value" href="">3</a>
+        <a class="answers__value" href="">4</a>
+        <a class="answers__value" href="">5</a>
+        <a class="answers__value" href="">6</a>
+        <a class="answers__value" href="">7</a>
+        <a class="answers__value" href="">8</a>
+        <a class="answers__value" href="">9</a>
+        <a class="answers__value" href="">10</a>
+    </div>
+
+    <br/>
+    <br/>
+
+    <strong>Your opinion is very valuable to us!</strong>
+    <h3>From the <strong>NLW</strong> Team</h3>
+</div>
