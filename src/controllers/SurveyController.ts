@@ -29,7 +29,7 @@ export default class SurveyController {
       const registeredSurveys = await surveyRepository.find();
 
       return response.status(200).send({ surveys: registeredSurveys });
-    } catch (err) {
+    } catch (err: any) {
       return response.status(400).send({ error: err });
     }
   }
