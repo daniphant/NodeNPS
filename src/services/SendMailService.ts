@@ -38,8 +38,6 @@ class SendMailService {
   ) {
     const templateFileContent = fs.readFileSync(path).toString("utf-8");
 
-    console.log(process.env.URL_MAIL);
-
     const html = handleBars.compile(templateFileContent)({
       name,
       title: subject,
