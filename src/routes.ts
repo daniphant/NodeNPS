@@ -13,4 +13,6 @@ routes.get("/surveys", SurveyController.index);
 
 routes.post("/sendMail", SendMailController.createSurveyUserAndSendMail);
 
+routes.get("/answerMail/:value/:surveyUserId", SendMailController.answerMail);
+
 export default routes;

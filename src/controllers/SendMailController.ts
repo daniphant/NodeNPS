@@ -20,12 +20,12 @@ export default class SurveyController {
     try {
       const user = await usersRepository.findOne({ email: userEmail });
 
-      if (!user) return response.status(400).send({ error: "User not found" });
+      if (!user) return response.status(406).send({ error: "User not found" });
 
       const survey = await surveyRepository.findOne({ id: surveyId });
 
       if (!survey)
-        return response.status(400).send({ error: "Survey not found" });
+        return response.status(406).send({ error: "Survey not found" });
 
       let surveyUser = await surveysUsersRepository.findOne({
         where: [{ userId: user.id }, { surveyId: survey.id }],
@@ -33,9 +33,6 @@ export default class SurveyController {
       });
 
       if (!surveyUser) {
-        console.log(
-          "User has not already interacted with this survey, creating..."
-        );
         surveyUser = await surveysUsersRepository.create({
           userId: user.id,
           surveyId,
@@ -43,6 +40,12 @@ export default class SurveyController {
 
         await surveysUsersRepository.save(surveyUser);
       }
+
+      if (surveyUser.value === null)
+        return response
+          .status(409)
+          .send({ error: "User has already answered this survey" });
+
       // #TODO refactor sendMail args into an object
 
       const sendMailService = await SendMailService.build();
@@ -56,6 +59,34 @@ export default class SurveyController {
       );
 
       return response.status(201).send({ surveyUser });
+    } catch (err: any) {
+      return response.status(400).send({ error: err });
+    }
+  }
+
+  static async answerMail(request: Request, response: Response) {
+    const { value, surveyUserId } = request.params;
+
+    const surveysUsersRepository = getCustomRepository(SurveysUsersRepository);
+
+    try {
+      const surveyUser = await surveysUsersRepository.findOne({
+        id: surveyUserId,
+      });
+
+      if (!surveyUser)
+        return response.status(406).send({ error: "survey_user not found" });
+
+      if (surveyUser.value === null)
+        return response
+          .status(409)
+          .send({ error: "User has already answered this survey" });
+
+      surveyUser.value = parseInt(value, 10); // From decimal number to string
+
+      await surveysUsersRepository.save(surveyUser);
+
+      return response.status(200).send({ surveyUser });
     } catch (err: any) {
       return response.status(400).send({ error: err });
     }
