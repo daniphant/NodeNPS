@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
-import path from "path";
 import handleBars from "handlebars";
 import fs from "fs";
 
@@ -27,17 +26,26 @@ class SendMailService {
     return new SendMailService(transporter);
   }
 
-  async sendMail(to: string, subject: string, description: string) {
-    const templateFileContent = fs
-      .readFileSync(
-        path.resolve(__dirname, "..", "views", "emails", "npsMail.hbs")
-      )
-      .toString("utf-8");
+  // #TODO refactor sendMail args into an object
+
+  async sendMail(
+    to: string,
+    name: string,
+    subject: string,
+    description: string,
+    surveyUserId: string,
+    path: string
+  ) {
+    const templateFileContent = fs.readFileSync(path).toString("utf-8");
+
+    console.log(process.env.URL_MAIL);
 
     const html = handleBars.compile(templateFileContent)({
-      name: to,
+      name,
       title: subject,
       description,
+      link: process.env.URL_MAIL,
+      surveyUserId,
     });
 
     const message = {

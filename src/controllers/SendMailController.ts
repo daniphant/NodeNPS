@@ -4,6 +4,7 @@ import SurveysUsersRepository from "@repositories/SurveysUsersRepository";
 import { Request, Response } from "express";
 import { getCustomRepository } from "typeorm";
 import SendMailService from "src/services/SendMailService";
+import path from "path";
 
 export default class SurveyController {
   static async createSurveyUserAndSendMail(
@@ -26,18 +27,32 @@ export default class SurveyController {
       if (!survey)
         return response.status(400).send({ error: "Survey not found" });
 
-      const surveyUser = await surveysUsersRepository.create({
-        userId: user.id,
-        surveyId,
+      let surveyUser = await surveysUsersRepository.findOne({
+        where: [{ userId: user.id }, { surveyId: survey.id }],
+        relations: ["user", "survey"],
       });
 
-      await surveysUsersRepository.save(surveyUser);
+      if (!surveyUser) {
+        console.log(
+          "User has not already interacted with this survey, creating..."
+        );
+        surveyUser = await surveysUsersRepository.create({
+          userId: user.id,
+          surveyId,
+        });
+
+        await surveysUsersRepository.save(surveyUser);
+      }
+      // #TODO refactor sendMail args into an object
 
       const sendMailService = await SendMailService.build();
       await sendMailService.sendMail(
         userEmail,
+        user.name,
         survey.title,
-        survey.description
+        survey.description,
+        surveyUser.id,
+        path.resolve(__dirname, "..", "views", "emails", "npsMail.hbs")
       );
 
       return response.status(201).send({ surveyUser });
