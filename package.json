@@ -18,6 +18,7 @@
     "nodemailer": "^6.5.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.31",
+    "dotenv": "^8.2.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

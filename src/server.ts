@@ -5,6 +5,8 @@ import defaultConnectionOptions, {
   prodConnectionOptions,
 } from "./database/ormconfig";
 
+require("dotenv").config();
+
 const main = async () => {
   await createConnection(
     process.env.NODE_ENV === "prod"
