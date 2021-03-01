@@ -1,15 +1,16 @@
 import { Server } from "http";
 import request, { SuperAgentTest } from "supertest";
-import { createConnection } from "typeorm";
+import { Connection, createConnection } from "typeorm";
 import app from "../app";
 import { testConnectionOptions } from "../database/ormconfig";
 
 let server: Server;
 let agent: SuperAgentTest;
+let connection: Connection;
 
 describe("Users", () => {
   beforeAll(async () => {
-    const connection = await createConnection(testConnectionOptions);
+    connection = await createConnection(testConnectionOptions);
 
     await connection.dropDatabase();
     await connection.runMigrations();
@@ -40,5 +41,9 @@ describe("Users", () => {
     });
 
     expect(response.status).toBe(409);
+  });
+
+  afterAll(async () => {
+    connection.close();
   });
 });
