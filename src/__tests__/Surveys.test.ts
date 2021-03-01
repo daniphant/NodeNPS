@@ -2,16 +2,14 @@ import { Server } from "http";
 import request, { SuperAgentTest } from "supertest";
 import { createConnection } from "typeorm";
 import app from "../app";
-import { connectionOptions } from "../database/ormconfig";
+import { testConnectionOptions } from "../database/ormconfig";
 
 let server: Server;
 let agent: SuperAgentTest;
 
 describe("Users", () => {
   beforeAll(async () => {
-    const connection = await createConnection(
-      connectionOptions[process.env.NODE_ENV]
-    );
+    const connection = await createConnection(testConnectionOptions);
 
     await connection.dropDatabase();
     await connection.runMigrations();

@@ -9,29 +9,25 @@ const defaultConnectionOptions: MysqlConnectionOptions = {
   },
 };
 
-const prodConnectionOptions: MysqlConnectionOptions = {
+export const prodConnectionOptions: MysqlConnectionOptions = {
   ...defaultConnectionOptions,
   username: "",
   password: "",
   database: "",
 };
 
-const devConnectionOptions: MysqlConnectionOptions = {
+export const devConnectionOptions: MysqlConnectionOptions = {
   ...defaultConnectionOptions,
   username: "",
   password: "",
   database: "",
 };
 
-const testConnectionOptions: MysqlConnectionOptions = {
+export const testConnectionOptions: MysqlConnectionOptions = {
   ...defaultConnectionOptions,
   username: "",
   password: "",
   database: "",
 };
 
-export default {
-  dev: devConnectionOptions,
-  prod: prodConnectionOptions,
-  test: testConnectionOptions,
-};
+export default defaultConnectionOptions;
