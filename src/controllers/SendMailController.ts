@@ -6,6 +6,7 @@ import path from "path";
 import User from "@models/User";
 import Survey from "@models/Survey";
 import SurveyUser from "@models/SurveyUser";
+import { ISendMailData } from "src/services/types";
 import SurveyController from "./SurveyController";
 import UserController from "./UserController";
 
@@ -83,16 +84,24 @@ export default class SendMailController {
 
   static async SendMail(user: User, survey: Survey, surveyUser: SurveyUser) {
     try {
-      // #TODO refactor sendMail args into an object
-      const sendMailService = await SendMailService.build();
-      await sendMailService.sendMail(
-        user.email,
-        user.name,
-        survey.title,
-        survey.description,
-        surveyUser.id,
-        path.resolve(__dirname, "..", "views", "emails", "npsMail.hbs")
+      const pathToMailTemplate = path.resolve(
+        __dirname,
+        "..",
+        "views",
+        "emails",
+        "npsMail.hbs"
       );
+
+      const data: ISendMailData = {
+        description: survey.description,
+        name: user.name,
+        subject: survey.title,
+        surveyUserId: surveyUser.id,
+        to: user.email,
+      };
+
+      const sendMailService = await SendMailService.build();
+      await sendMailService.sendMailFromTemplate(data, pathToMailTemplate);
     } catch (err: any) {
       console.log(err);
     }

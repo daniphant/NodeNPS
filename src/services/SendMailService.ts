@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import handleBars from "handlebars";
 import fs from "fs";
+import { ISendMailData } from "./types";
 
 class SendMailService {
   client: Mail;
@@ -28,15 +29,9 @@ class SendMailService {
 
   // #TODO refactor sendMail args into an object
 
-  async sendMail(
-    to: string,
-    name: string,
-    subject: string,
-    description: string,
-    surveyUserId: string,
-    path: string
-  ) {
+  async sendMailFromTemplate(data: ISendMailData, path: string) {
     const templateFileContent = fs.readFileSync(path).toString("utf-8");
+    const { description, name, subject, surveyUserId, to } = data;
 
     const html = handleBars.compile(templateFileContent)({
       name,
