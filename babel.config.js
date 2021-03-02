@@ -28,6 +28,6 @@ module.exports ={
         ]
     ],
     ignore: [
-        '**/*.spec;ts'
+        '**/*.spec.ts'
     ]
 }
