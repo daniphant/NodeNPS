@@ -1,75 +1,110 @@
-import SurveysRepository from "@repositories/SurveysRepository";
-import UsersRepository from "@repositories/UsersRepository";
 import SurveysUsersRepository from "@repositories/SurveysUsersRepository";
 import { Request, Response } from "express";
 import { getCustomRepository } from "typeorm";
 import SendMailService from "src/services/SendMailService";
 import path from "path";
+import User from "@models/User";
+import Survey from "@models/Survey";
+import SurveyUser from "@models/SurveyUser";
+import SurveyController from "./SurveyController";
+import UserController from "./UserController";
 
-export default class SurveyController {
-  static async createSurveyUserAndSendMail(
+export default class SendMailController {
+  // #TODO: think of a better name
+  static async handleSendMailRequest(
     request: Request,
     response: Response
   ): Promise<Response> {
-    const { userEmail, surveyId } = request.body;
-
-    const surveyRepository = getCustomRepository(SurveysRepository);
-    const usersRepository = getCustomRepository(UsersRepository);
-    const surveysUsersRepository = getCustomRepository(SurveysUsersRepository);
-
     try {
-      const user = await usersRepository.findOne({ email: userEmail });
+      const { userEmail, surveyId } = request.body;
 
-      if (!user) return response.status(406).send({ error: "User not found" });
+      const user = await UserController.getUserIfExists({ email: userEmail });
+      if (!user) return response.status(400).send({ error: "User not found" });
 
-      const survey = await surveyRepository.findOne({ id: surveyId });
-
+      const survey = await SurveyController.getSurveyIfExists({ id: surveyId });
       if (!survey)
-        return response.status(406).send({ error: "Survey not found" });
+        return response.status(400).send({ error: "Survey not found" });
+
+      const [
+        surveyUser,
+        message,
+        responseStatus,
+      ] = await SendMailController.createSurveyUserIfNotExists(
+        user.id,
+        survey.id
+      );
+
+      if (!(responseStatus >= 400 && responseStatus < 500) && surveyUser)
+        await SendMailController.SendMail(user, survey, surveyUser);
+
+      return response.status(responseStatus).send(message);
+    } catch (err: any) {
+      return response.status(400).send({ error: err });
+    }
+  }
+
+  /* Creates a survey, by first verifying if a user with the given email and a survey with the given id exist */
+  static async createSurveyUserIfNotExists(
+    userId: string,
+    surveyId: string
+  ): Promise<[SurveyUser | undefined, {}, number]> {
+    try {
+      const surveysUsersRepository = getCustomRepository(
+        SurveysUsersRepository
+      );
 
       let surveyUser = await surveysUsersRepository.findOne({
-        where: [{ userId: user.id }, { surveyId: survey.id }],
+        where: [{ userId }, { surveyId }],
         relations: ["user", "survey"],
       });
 
       if (!surveyUser) {
-        surveyUser = await surveysUsersRepository.create({
-          userId: user.id,
+        surveyUser = surveysUsersRepository.create({
+          userId,
           surveyId,
         });
 
         await surveysUsersRepository.save(surveyUser);
+        return [surveyUser, { surveyUser }, 201];
       }
 
       if (surveyUser.value === null)
-        return response
-          .status(409)
-          .send({ error: "User has already answered this survey" });
+        return [
+          undefined,
+          { error: "User has already answered this survey!" },
+          409,
+        ];
 
+      return [surveyUser, { surveyUser }, 200];
+    } catch (err: any) {
+      return [undefined, { error: err }, 400];
+    }
+  }
+
+  static async SendMail(user: User, survey: Survey, surveyUser: SurveyUser) {
+    try {
       // #TODO refactor sendMail args into an object
-
       const sendMailService = await SendMailService.build();
       await sendMailService.sendMail(
-        userEmail,
+        user.email,
         user.name,
         survey.title,
         survey.description,
         surveyUser.id,
         path.resolve(__dirname, "..", "views", "emails", "npsMail.hbs")
       );
-
-      return response.status(201).send({ surveyUser });
     } catch (err: any) {
-      return response.status(400).send({ error: err });
+      console.log(err);
     }
   }
 
   static async answerMail(request: Request, response: Response) {
-    const { value, surveyUserId } = request.params;
-
-    const surveysUsersRepository = getCustomRepository(SurveysUsersRepository);
-
     try {
+      const { value, surveyUserId } = request.params;
+
+      const surveysUsersRepository = getCustomRepository(
+        SurveysUsersRepository
+      );
       const surveyUser = await surveysUsersRepository.findOne({
         id: surveyUserId,
       });

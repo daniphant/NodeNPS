@@ -11,7 +11,7 @@ routes.post("/users", UserController.create);
 routes.post("/surveys", SurveyController.create);
 routes.get("/surveys", SurveyController.index);
 
-routes.post("/sendMail", SendMailController.createSurveyUserAndSendMail);
+routes.post("/sendMail", SendMailController.handleSendMailRequest);
 
 routes.get("/answerMail/:value/:surveyUserId", SendMailController.answerMail);
 

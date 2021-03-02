@@ -1,6 +1,7 @@
+import User from "@models/User";
 import UsersRepository from "@repositories/UsersRepository";
 import { Request, Response } from "express";
-import { getCustomRepository } from "typeorm";
+import { DeepPartial, getCustomRepository } from "typeorm";
 
 export default class UserController {
   static async create(request: Request, response: Response): Promise<Response> {
@@ -25,5 +26,22 @@ export default class UserController {
 
       return response.status(400).send({ error: err });
     }
+  }
+
+  static async getUserIfExists(
+    queryParameters: DeepPartial<User>
+  ): Promise<User | false> {
+    try {
+      const usersRepository = getCustomRepository(UsersRepository);
+      const user = await usersRepository.findOne(queryParameters);
+
+      if (!user) return false;
+
+      return user;
+    } catch (err: any) {
+      console.log(err);
+    }
+
+    return false;
   }
 }
